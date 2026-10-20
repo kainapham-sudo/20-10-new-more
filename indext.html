@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#210b19">
+<title>20/10 · Gửi mẹ</title>
+
+<style>
+:root {
+  --pink: #ff8eb5;
+  --rose: #f34e83;
+  --gold: #ffe4ad;
+  --bg: #210b19;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: #fff1f5;
+  background:
+    radial-gradient(ellipse at 50% 42%,
+      #63213e 0%, #371329 38%, var(--bg) 78%);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+#scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  isolation: isolate;
+}
+
+/* Ánh sáng nền */
+.glow {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: #ff6096;
+  filter: blur(85px);
+  opacity: .12;
+  pointer-events: none;
+  animation: glow 5s ease-in-out infinite alternate;
+}
+
+.glow.one {
+  top: 5%;
+  left: -90px;
+}
+
+.glow.two {
+  bottom: 0;
+  right: -90px;
+  background: #ffbf91;
+}
+
+@keyframes glow {
+  to { opacity: .28; transform: scale(1.18); }
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  color: var(--gold);
+  opacity: .35;
+  animation: twinkle 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: .15; transform: scale(.7); }
+  to { opacity: .85; transform: scale(1.15); }
+}
+
+/* Màn hình mở thư */
+.intro {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  padding: 24px;
+  text-align: center;
+  transition: opacity .8s, transform .8s;
+}
+
+.intro.hide {
+  opacity: 0;
+  transform: translateY(-18px) scale(.94);
+  pointer-events: none;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  margin-bottom: 22px;
+}
+
+.intro h1 {
+  font-weight: normal;
+  font-size: clamp(27px, 7vw, 43px);
+  line-height: 1.4;
+  margin: 0 0 12px;
+  text-shadow: 0 0 25px #ff80ac55;
+}
+
+.subtitle {
+  color: #f3c5d5;
+  font-size: 15px;
+  letter-spacing: 1px;
+  margin-bottom: 38px;
+}
+
+.envelope-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.envelope {
+  position: relative;
+  width: 150px;
+  height: 103px;
+  margin: 0 auto 20px;
+  border: 1px solid #ffc2d5aa;
+  border-radius: 4px;
+  background: linear-gradient(145deg, #f8b2c9, #a52d58);
+  box-shadow: 0 0 35px #ff63954a;
+  animation: float 3s ease-in-out infinite;
+}
+
+.envelope::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-left: 74px solid transparent;
+  border-right: 74px solid transparent;
+  border-top: 58px solid #ffdae6;
+  transform-origin: top;
+  transition: transform .6s;
+  z-index: 2;
+}
+
+.envelope::after {
+  content: "✿";
+  position: absolute;
+  top: 31px;
+  left: 61px;
+  z-index: 3;
+  color: #9d3157;
+  font-size: 28px;
+}
+
+.envelope-button:active .envelope {
+  transform: scale(.95);
+}
+
+.open-label {
+  display: block;
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 1.5px;
+}
+
+.tap-hint {
+  color: #d9a8bb;
+  font: 12px Arial, sans-serif;
+  margin-top: 12px;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+/* Bức thư */
+.letter {
+  position: absolute;
+  z-index: 4;
+  width: min(88%, 420px);
+  max-height: 76vh;
+  max-height: 76dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 30px 23px;
+  text-align: center;
+  border: 1px solid #f7b9d35c;
+  border-radius: 150px 150px 12px 12px;
+  background: linear-gradient(180deg,
+    #59223edb, #2b1024ed);
+  box-shadow: 0 0 55px #f34e8330,
+              inset 0 0 30px #ffb5d008;
+  opacity: 0;
+  transform: translateY(25px) scale(.95);
+  pointer-events: none;
+  transition: opacity 1s, transform 1s;
+  scrollbar-width: thin;
+  scrollbar-color: #ad5276 transparent;
+}
+
+.letter.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.letter-rose {
+  font-size: 34px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 12px #ff638a80);
+}
+
+.letter h2 {
+  font-size: clamp(24px, 6vw, 31px);
+  font-weight: normal;
+  color: #ffcedd;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.date {
+  font: 11px Arial, sans-serif;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+
+.message {
+  font-size: 16px;
+  line-height: 1.95;
+  color: #fff0f5;
+  white-space: pre-line;
+}
+
+.message p {
+  margin: 0 0 15px;
+}
+
+.signature {
+  margin-top: 23px;
+  color: #ffd3a9;
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.9;
+}
+
+.small-roses {
+  font-size: 19px;
+  letter-spacing: 5px;
+  margin-top: 20px;
+}
+
+/* Cánh hoa bay */
+.petal {
+  position: absolute;
+  z-index: 6;
+  top: -35px;
+  left: 0;
+  width: 12px;
+  height: 17px;
+  border-radius: 80% 15% 70% 25%;
+  background: linear-gradient(135deg, #ffb3ca, #e83c75);
+  opacity: .85;
+  pointer-events: none;
+  animation: fall linear forwards;
+  will-change: transform;
+}
+
+@keyframes fall {
+  0% {
+    transform: translate3d(0, -5vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% { opacity: .9; }
+  85% { opacity: .75; }
+  100% {
+    transform: translate3d(var(--drift), 110vh, 0)
+      rotate(var(--spin));
+    opacity: 0;
+  }
+}
+
+/* Hoa nở khi mở thư */
+.bloom {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  top: 50%;
+  font-size: 23px;
+  line-height: 1;
+  pointer-events: none;
+  animation: burst 1.5s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.2) rotate(0);
+  }
+  18% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform:
+      translate(calc(-50% + var(--x)),
+                calc(-50% + var(--y)))
+      scale(1.4) rotate(var(--r));
+  }
+}
+
+.flash {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle,
+    #ffe6ef 0%, #ff8eb54d 18%, transparent 65%);
+  opacity: 0;
+}
+
+.flash.play {
+  animation: flash .9s ease-out forwards;
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  15% { opacity: .8; }
+  100% { opacity: 0; }
+}
+
+.footer {
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
+  text-align: center;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 2px;
+  color: #c48da4;
+  opacity: .7;
+  pointer-events: none;
+}
+
+@media (max-width: 380px) {
+  .letter {
+    padding: 25px 18px;
+    max-height: 73dvh;
+  }
+
+  .message { font-size: 15px; }
+  .envelope { transform: scale(.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="scene">
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+  <div class="stars" id="stars"></div>
+  <div class="flash" id="flash"></div>
+
+  <main class="intro" id="intro">
+    <div class="eyebrow">20 · 10 · 2026</div>
+    <h1>Một chút dịu dàng<br>gửi đến mẹ</h1>
+    <div class="subtitle">Một món quà nhỏ trong ngày đặc biệt</div>
+
+    <button class="envelope-button" id="openBtn"
+            aria-label="Mở thiệp chúc mừng ngày 20 tháng 10">
+      <div class="envelope"></div>
+      <span class="open-label">MỞ THƯ</span>
+      <div class="tap-hint">Chạm nhẹ để mở món quà nhé</div>
+    </button>
+  </main>
+
+  <article class="letter" id="letter" aria-live="polite">
+    <div class="letter-rose">🌹</div>
+    <h2>Chúc mừng ngày 20/10</h2>
+    <div class="date">GỬI MẸ · VỚI TẤT CẢ SỰ TRÂN TRỌNG</div>
+
+    <div class="message" id="message"></div>
+
+    <div class="signature" id="signature" hidden>
+      Chúc mẹ có một ngày 20/10 thật vui!<br>
+      🌹 🌹 🌹
+    </div>
+
+    <div class="small-roses">✿ ❀ ✿ ❀ ✿</div>
+  </article>
+
+  <div class="footer">A LITTLE FLOWER GARDEN FOR YOU</div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const intro = document.getElementById("intro");
+  const letter = document.getElementById("letter");
+  const message = document.getElementById("message");
+  const signature = document.getElementById("signature");
+  const openBtn = document.getElementById("openBtn");
+  const flash = document.getElementById("flash");
+  const stars = document.getElementById("stars");
+
+  // Nội dung lời chúc
+  const paragraphs = [
+    "Nhân ngày Phụ nữ Việt Nam 20/10, chúc mẹ luôn xinh đẹp, mạnh khỏe và thật nhiều niềm vui.",
+    "Mong mỗi ngày của mẹ đều có những điều dễ thương, những nụ cười thật tươi và thật nhiều khoảnh khắc bình yên.",
+    "Chúc mọi điều tốt đẹp sẽ đến với mẹ, công việc thuận lợi, mọi dự định đều suôn sẻ và lúc nào cũng giữ được tinh thần vui vẻ, lạc quan.",
+    "Cảm ơn mẹ vì những điều mẹ vẫn luôn làm mỗi ngày. Mong mẹ luôn được yêu thương, quan tâm và có thật nhiều thời gian dành cho chính mình."
+  ];
+
+  let opened = false;
+  let petalTimer = null;
+  let petalCount = 0;
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  const smallScreen = window.innerWidth < 500;
+  const maxPetals = reduceMotion ? 0 : (smallScreen ? 18 : 30);
+
+  // Tạo các điểm sáng tĩnh, rất nhẹ.
+  const starCount = smallScreen ? 15 : 28;
+  const starFragment = document.createDocumentFragment();
+
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement("span");
+    star.className = "star";
+    star.textContent = "✦";
+    star.style.left = Math.random() * 100 + "%";
+    star.style.top = Math.random() * 100 + "%";
+    star.style.fontSize = (7 + Math.random() * 8) + "px";
+    star.style.animationDelay = (Math.random() * 3) + "s";
+    starFragment.appendChild(star);
+  }
+
+  stars.appendChild(starFragment);
+
+  // Tạo cánh hoa, tự xóa sau khi rơi.
+  function createPetal() {
+    if (petalCount >= maxPetals) return;
+
+    const petal = document.createElement("span");
+    petal.className = "petal";
+    petal.style.left = Math.random() * 100 + "%";
+    petal.style.setProperty(
+      "--drift", (Math.random() * 150 - 75) + "px"
+    );
+    petal.style.setProperty(
+      "--spin", (Math.random() * 600 - 300) + "deg"
+    );
+    petal.style.animationDuration =
+      (reduceMotion ? 1 : 5 + Math.random() * 4) + "s";
+
+    document.getElementById("scene").appendChild(petal);
+    petalCount++;
+
+    petal.addEventListener("animationend", () => {
+      petal.remove();
+      petalCount--;
+    }, { once: true });
+  }
+
+  // Hoa bung tỏa quanh phong thư.
+  function burstFlowers() {
+    if (reduceMotion) return;
+
+    const count = smallScreen ? 20 : 32;
+    const flowers = ["🌹", "🌸", "✿", "❀"];
+
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < count; i++) {
+      const flower = document.createElement("span");
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 90 + Math.random() * 190;
+
+      flower.className = "bloom";
+      flower.textContent =
+        flowers[Math.floor(Math.random() * flowers.length)];
+
+      flower.style.setProperty(
+        "--x", Math.cos(angle) * distance + "px"
+      );
+      flower.style.setProperty(
+        "--y", Math.sin(angle) * distance + "px"
+      );
+      flower.style.setProperty(
+        "--r", (Math.random() * 300 - 150) + "deg"
+      );
+      flower.style.animationDelay =
+        (Math.random() * .2) + "s";
+
+      fragment.appendChild(flower);
+      flower.addEventListener("animationend", () => {
+        flower.remove();
+      }, { once: true });
+    }
+
+    document.getElementById("scene").appendChild(fragment);
+  }
+
+  // Lời chúc xuất hiện từ từ theo từng đoạn.
+  function showMessage() {
+    let index = 0;
+
+    function nextParagraph() {
+      if (index >= paragraphs.length) {
+        signature.hidden = false;
+        return;
+      }
+
+      const p = document.createElement("p");
+      p.textContent = paragraphs[index++];
+      p.style.opacity = "0";
+      p.style.transition = "opacity 1.2s ease";
+
+      message.appendChild(p);
+
+      requestAnimationFrame(() => {
+        p.style.opacity = "1";
+      });
+
+      // Đoạn tiếp theo xuất hiện sau khi người đọc có thời gian
+      // thưởng thức đoạn hiện tại.
+      window.setTimeout(nextParagraph, 2800);
+    }
+
+    nextParagraph();
+  }
+
+  function openLetter() {
+    if (opened) return;
+    opened = true;
+
+    openBtn.disabled = true;
+    intro.classList.add("hide");
+
+    flash.classList.remove("play");
+    void flash.offsetWidth;
+    flash.classList.add("play");
+
+    burstFlowers();
+
+    window.setTimeout(() => {
+      intro.style.display = "none";
+      letter.classList.add("show");
+      showMessage();
+    }, 450);
+
+    // Hiệu ứng nền vừa phải, không tạo hàng trăm phần tử.
+    if (maxPetals > 0) {
+      for (let i = 0; i < Math.min(10, maxPetals); i++) {
+        window.setTimeout(createPetal, i * 90);
+      }
+
+      petalTimer = window.setInterval(() => {
+        if (document.hidden) return;
+        createPetal();
+      }, smallScreen ? 800 : 550);
+    }
+  }
+
+  openBtn.addEventListener("click", openLetter);
+
+  // Dừng tạo hiệu ứng khi chuyển sang ứng dụng khác.
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && petalTimer) {
+      clearInterval(petalTimer);
+      petalTimer = null;
+    } else if (!document.hidden && opened &&
+               maxPetals > 0 && !petalTimer) {
+      petalTimer = window.setInterval(createPetal, 850);
+    }
+  });
+})();
+</script>
+</body>
+</html>
